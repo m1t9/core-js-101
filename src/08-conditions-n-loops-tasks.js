@@ -387,8 +387,25 @@ function toNaryString(num, n) {
  *   ['/web/assets/style.css', '/.bin/mocha',  '/read.me'] => '/'
  *   ['/web/favicon.ico', '/web-scripts/dump', '/webalizer/logs'] => '/'
  */
-function getCommonDirectoryPath(/* pathes */) {
-  throw new Error('Not implemented');
+
+function getCommonDirectoryPath(pathes) {
+  let commonDir = '';
+  let count = 0;
+
+  function compareChars(path) {
+    return path[count] === pathes[0][count];
+  }
+
+  while (pathes.every((localPath) => compareChars(localPath))) {
+    commonDir += pathes[0][count];
+    count += 1;
+  }
+
+  if (commonDir.lastIndexOf('/') !== commonDir.length - 1) {
+    return commonDir.slice(0, commonDir.lastIndexOf('/') + 1);
+  }
+
+  return commonDir;
 }
 
 
@@ -410,8 +427,23 @@ function getCommonDirectoryPath(/* pathes */) {
  *                         [ 6 ]]
  *
  */
-function getMatrixProduct(/* m1, m2 */) {
-  throw new Error('Not implemented');
+function getMatrixProduct(m1, m2) {
+  const m1Rows = m1.length;
+  const m1Col = m1[0].length;
+  const m2Col = m2[0].length;
+  const result = new Array(m1Rows);
+
+  for (let i = 0; i < m1Rows; i += 1) {
+    result[i] = new Array(m2Col);
+    for (let j = 0; j < m2Col; j += 1) {
+      result[i][j] = 0;
+      for (let k = 0; k < m1Col; k += 1) {
+        result[i][j] += m1[i][k] * m2[k][j];
+      }
+    }
+  }
+
+  return result;
 }
 
 
@@ -445,8 +477,65 @@ function getMatrixProduct(/* m1, m2 */) {
  *    [    ,   ,    ]]
  *
  */
-function evaluateTicTacToePosition(/* position */) {
-  throw new Error('Not implemented');
+function evaluateTicTacToePosition(position) {
+  let winner;
+  let answ;
+
+  function checkWin(arr) {
+    if (arr.length !== 3) return undefined;
+
+    const localArr = arr;
+
+    for (let i = 0; i < localArr.length; i += 1) {
+      if (localArr[i] !== 'X' && localArr[i] !== '0') {
+        localArr[i] = 'P';
+      }
+    }
+
+    if (localArr.every((item) => item === '0')) return '0';
+    if (localArr.every((item) => item === 'X')) return 'X';
+    return undefined;
+  }
+
+  position.forEach((row) => {
+    answ = checkWin(row);
+    if (answ === 'X' || answ === '0') {
+      winner = answ;
+    }
+  });
+
+  for (let i = 0; i < position.length; i += 1) {
+    const arr = [];
+    for (let j = 0; j < position.length; j += 1) {
+      arr.push(position[j][i]);
+    }
+    answ = checkWin(arr);
+    if (answ === 'X' || answ === '0') {
+      winner = answ;
+    }
+  }
+
+  let diag = [];
+  for (let i = 0; i < position.length; i += 1) {
+    diag.push(position[i][i]);
+  }
+  answ = checkWin(diag);
+  if (answ === 'X' || answ === '0') {
+    winner = answ;
+  }
+
+  diag = [];
+  let k = 0;
+  for (let i = position.length - 1; i >= 0; i -= 1) {
+    diag.push(position[k][i]);
+    k += 1;
+  }
+  answ = checkWin(diag);
+  if (answ === 'X' || answ === '0') {
+    winner = answ;
+  }
+
+  return winner;
 }
 
 
